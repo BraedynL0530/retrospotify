@@ -1,5 +1,5 @@
 from pytube import YouTube
-from pydub import audio_segment
+from pydub import AudioSegment
 import os
 from retrospotify1 import models
 def downloadYtVideo(ytUrl):
@@ -12,7 +12,11 @@ def downloadYtVideo(ytUrl):
 
         base,ext = os.path.splitext(audioFile)
         audio = audio_segment.from_file(audioFile)
-        audio.export(f"{base}.mp3",format="mp3")
+        
+        outpuDir ="music/"
+        baseName = os.path.basename(base)
+        mp3Path = oa.path.join(outputdir,f"{baseName}.mp3")
+        audio.export(mp3Path,format="mp3")
         print(f"Converted to mp3")
 
         os.remove(audioFile)
@@ -23,11 +27,18 @@ def downloadYtVideo(ytUrl):
 #videoUrl=""
 #downloadYtVideo(videoUrl)
 
-def getYtData():
-    #.join or something  to find artist and title from the - or by in yt titles
-    models.Music.objects.create(
-        title=title,
-        artist=artist,
-        filepath=audio
-    )
+def getYtData(): 
+    musicPath ="music/"
+    for file in os.listdir(musicPath):
+        if '-' in file:
+            title, artist = file.rsplit("-",1) #Right most incase of -Remix
+            title = title.strip($
+            artist = artist.replace(".mp3","").strip
+            
+            filePath = os.path.join(musicPath, file)
+            models.Music.objects.create(
+               title=title,
+               artist=artist,
+               file_path=filePath                    
+            )
     return  #for author + title later
