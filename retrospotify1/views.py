@@ -56,3 +56,76 @@ def download_youtube(request):
             return JsonResponse({'success': False, 'error': str(e)})
 
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def create_playlist(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name')
+
+            if not name:
+                return JsonResponse({'success': False, 'error': 'No name provided'})
+
+            playlist = Playlist.objects.create(name=name)
+
+            return JsonResponse({
+                'success': True,
+                'playlist': {
+                    'id': playlist.id,
+                    'name': playlist.name
+                }
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def delete_playlist(request, playlist_id):
+    if request.method == 'DELETE':
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            playlist.delete()
+            return JsonResponse({'success': True})
+        except Playlist.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Playlist not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+def add_to_playlist(request, playlist_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            music_id = data.get('song_id')
+            if not music_id:
+                return JsonResponse({'success': False, 'error': 'No song ID provided'})
+
+            music = Music.objects.get(id=music_id)
+            playlist = Playlist.objects.get(id=playlist_id)
+
+            if playlist.music.filter().exists():
+                return JsonResponse({'success': False, 'error': 'Playlist already has this song!'})
+
+            playlist.music.add(music)
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+        return JsonResponse({'success': True})
+
+def get_playlist_songs(request, playlist_id):
+    if request.method == 'GET':
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            songs = list(Playlist.objects.get(id=playlist_id).music.values('title', 'artist', 'filepath'))
+
+            return JsonResponse({
+                'success': True,
+                'playlist_name': playlist.name,
+                'songs':songs
+             })
+        except Exception as e:
+             return JsonResponse({'success': False, 'error': str(e)})

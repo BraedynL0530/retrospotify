@@ -31,7 +31,8 @@
       <button class="btn-left" id="prev" title="Previous"><span>◀</span></button>
       <button class="btn-center" id="pause" title="Play/Pause"><span id="pause-icon">⏸</span></button>
       <button class="btn-right" id="next" title="Next"><span>▶</span></button>
-      <button class="btn-bottom" id="playlist-btn" title="Playlists"><span>♫</span></button>
+      <button class="btn-add-playlist" id="add-to-playlist-btn" title="Add to Playlist"><span>+♫</span></button>
+      <button class="btn-bottom" id="playlist-btn" title="View Playlists"><span>♫</span></button>
     </div>
   </div>
 </div>
@@ -40,6 +41,7 @@
   <source src="" type="audio/mpeg">
   Your browser doesn't support audio.
 </audio>
+
 <!-- YouTube overlay -->
 <div class="overlay" id="yt-overlay">
   <div class="overlay-content">
@@ -56,9 +58,13 @@
 <div class="overlay" id="playlist-overlay">
   <div class="overlay-content">
     <h3>Playlists</h3>
+    <p>Click playlist to play • Delete to remove</p>
     <ul id="playlist-list">
       {% for pl in playlists %}
-        <li>{{ pl.name }}</li>
+        <li data-playlist-id="{{ pl.id }}" class="playlist-item">
+          <span class="playlist-name">{{ pl.name }}</span>
+          <button class="delete-playlist" data-playlist-id="{{ pl.id }}">🗑️</button>
+        </li>
       {% empty %}
         <li>No playlists yet.</li>
       {% endfor %}
@@ -71,6 +77,10 @@
   </div>
 </div>
 
+<script>
+  // Pass music data from Django to JavaScript
+  const musicData = {{ musicData|safe }};
+</script>
 <script src="{% static 'player.js' %}"></script>
 </body>
 </html>
