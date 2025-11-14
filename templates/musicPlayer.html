@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Walkman</title>
+<link rel="stylesheet" href="{% static 'player.css' %}">
+</head>
+<body>
+
+<div class="walkman">
+  <div class="walkman-body">
+    <div class="brand-logo">SONY</div>
+    <div class="model-text">WALKMAN</div>
+
+    <div class="screen">
+      <div class="cd-disc" id="cd-disc">
+        <div class="cd-center"></div>
+        <div class="cd-shine"></div>
+      </div>
+      <div class="text-scroll">
+        <div class="scroll-text" id="scroll-text">
+          <span id="song-info">No song playing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-top" id="add-yt" title="Add YouTube"><span>+YT</span></button>
+      <button class="btn-left" id="prev" title="Previous"><span>◀</span></button>
+      <button class="btn-center" id="pause" title="Play/Pause"><span id="pause-icon">⏸</span></button>
+      <button class="btn-right" id="next" title="Next"><span>▶</span></button>
+      <button class="btn-bottom" id="playlist-btn" title="Playlists"><span>♫</span></button>
+    </div>
+  </div>
+</div>
+
+<audio id="audio-player" preload="auto">
+  <source src="" type="audio/mpeg">
+  Your browser doesn't support audio.
+</audio>
+<!-- YouTube overlay -->
+<div class="overlay" id="yt-overlay">
+  <div class="overlay-content">
+    <h3>Add YouTube Link</h3>
+    <input type="text" id="yt-link" placeholder="Paste YouTube URL">
+    <div class="overlay-buttons">
+      <button id="yt-submit">Add</button>
+      <button id="close-yt">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Playlist overlay -->
+<div class="overlay" id="playlist-overlay">
+  <div class="overlay-content">
+    <h3>Playlists</h3>
+    <ul id="playlist-list">
+      {% for pl in playlists %}
+        <li>{{ pl.name }}</li>
+      {% empty %}
+        <li>No playlists yet.</li>
+      {% endfor %}
+    </ul>
+    <input type="text" id="new-playlist" placeholder="New playlist name">
+    <div class="overlay-buttons">
+      <button id="create-playlist">Create</button>
+      <button id="close-playlist">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'player.js' %}"></script>
+</body>
+</html>
